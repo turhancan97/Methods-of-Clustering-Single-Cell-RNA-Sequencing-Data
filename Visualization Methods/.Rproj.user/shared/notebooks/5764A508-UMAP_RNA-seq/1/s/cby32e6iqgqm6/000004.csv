@@ -1,0 +1,8 @@
+"0","umap(pollen$data, labels=scale(as.numeric(pollen$data[row.names(pollen$data)=='GAGE4',])),"
+"0","controlscale = TRUE,scale=2,legendtitle = 'GAGE4')"
+"2","***UMAP wrapper function***
+"
+"2","running...
+"
+"2","done.
+"

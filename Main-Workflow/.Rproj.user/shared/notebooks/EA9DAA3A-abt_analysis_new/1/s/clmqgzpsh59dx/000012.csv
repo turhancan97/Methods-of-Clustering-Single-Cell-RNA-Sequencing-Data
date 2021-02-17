@@ -1,0 +1,4 @@
+"0","# For both sample A and sample B"
+"0","ave.counts <- rowMeans(counts(sce_3))"
+"0","hist(log10(ave.counts), breaks=100, main="""", col=""grey80"","
+"0","     xlab=expression(Log[10]~""average count""))"

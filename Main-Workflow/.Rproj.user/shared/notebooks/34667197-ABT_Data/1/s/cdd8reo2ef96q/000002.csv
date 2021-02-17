@@ -1,0 +1,7 @@
+"0","```r
+# Find PCA top 200 genes. This may take some time.
+sce<-RankPCAGenes(sce, top = 500)
+```"
+"1","Find best PCA components...[1] 1145 5000
+500 genes selected.
+"

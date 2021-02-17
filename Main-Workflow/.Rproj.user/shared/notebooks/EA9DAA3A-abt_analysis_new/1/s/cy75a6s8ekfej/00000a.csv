@@ -1,0 +1,6 @@
+"0","# For both sample A and sample B"
+"0","threshold <- 3748.566"
+"0","ggplot(df2,aes(number_expressed)) + geom_density(colour = ""blue"",fill=""white"") +"
+"0","  geom_vline(xintercept=threshold,color = ""red"") +"
+"0","  xlab(""Number of expressed genes"") + ylab(""Density"") +"
+"0","  ggtitle(""Distribution"")"

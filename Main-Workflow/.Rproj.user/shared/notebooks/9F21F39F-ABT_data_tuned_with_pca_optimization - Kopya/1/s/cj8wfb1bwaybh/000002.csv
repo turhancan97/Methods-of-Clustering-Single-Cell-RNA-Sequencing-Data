@@ -1,0 +1,6 @@
+"0","```r
+ave.counts <- rowMeans(counts(sce_3))
+hist(log10(ave.counts), breaks=100, main=\"\", col=\"grey80\",
+     xlab=expression(Log[10]~\"average count\"))
+abline(v=log10(0.1), col=\"blue\", lwd=2, lty=2)
+```"

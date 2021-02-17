@@ -1,0 +1,8 @@
+"0","```r
+# is.mito <- grepl(\"^MT-\", rownames(sce_2))
+# sce_2 <- perCellQCMetrics(sce_2,subsets=list(Mito=is.mito))
+sce_2 <- perCellQCMetrics(sce_2)
+df <- data.frame(library_sizes=sce_2$sum,number_expressed=sce_2$detected)
+ggplot(df,aes(library_sizes)) + geom_histogram(binwidth=7500,colour = \"black\",fill=\"orange\") + xlab(\"Library sizes\") + ylab(\"Number of cells\") +
+  ggtitle(\"Histogram\")
+```"

@@ -1,0 +1,29 @@
+"0","```r
+DE_genes_all = FindMarkers(sce_plot, selected_clusters=NA, lfc_th = 1, q_th =0.001, nDE=30)
+```"
+"1","Computing for DE genes:
+Cluster 1 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 2 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 3 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 4 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 5 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 6 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 7 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+Cluster 8 :
+	Computing Wilcoxon p values...Done.
+	Computing Log fold change values...Done.
+"

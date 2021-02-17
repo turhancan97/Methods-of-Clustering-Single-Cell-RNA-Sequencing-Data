@@ -1,0 +1,659 @@
+---
+title: "ABT Dataset - Tuned Parameters and Differential Expression Analysis"
+output: html_notebook
+---
+# Single Cell RNA-Seq
+
+Today it is possible to obtain genome-wide transcriptome data from single cells using high-throughput sequencing. It is what we call single-cell RNA-Sequencing or scRNA-Seq. The main advantage of single-cell RNA-Sequencing is that it allows researchers to measure gene expression levels at the resolution of single cells.
+
+Why is single-cell RNA-Sequencing a revolution in biology? Well, it's because it has plenty of applications, especially in cancer, microbiology, and neurology. For example, in personalized medicine in cancer, it could enable researchers to identify individual clones and biomarkers in a tumor, and select precision drugs for each of them. This is not possible using bulk RNA-sequencing where you get an average gene expression profile of all the cells in the tumor.
+
+![Single-Call Sequencing](Single-Cell.jpg)
+
+With single-cell RNA-Seq, the data you get out from the lab after the preprocessing is this big matrix where you have the genes as the rows and the cells as the columns. Inside the matrix you have counts corresponding to the number of reads aligned to each gene and each cell where a read is a sequence of nucleotides (A,T,C,G). You also get two other matrices corresponding to the cell-level and gene-level covariates. For the gene-level covariates, you for example have the length of the genes or the GC content which is the percentage of nucleotides G and C compared to nucleotides A and T. For the cell-level covariates, you could have quality control measures of the cells, for example, the batches in which the cells have been sequenced.
+
+![Data Structure](Data-Structure.jpg)
+
+# SingleCellExperiment
+
+The SingleCellExperiment class is a lightweight Bioconductor container for storing and manipulating single-cell genomics data. It extends the RangedSummarizedExperiment class and follows similar conventions, i.e., rows should represent features (genes, transcripts, genomic regions) and columns should represent cells. It provides methods for storing dimensionality reduction results and data for alternative feature sets (e.g., synthetic spike-in transcripts, antibody-derived tags). It is the central data structure for Bioconductor single-cell packages like scater and scran.
+
+![SingleCellExperiment](SingleCellExperiment.jpg)
+
+dropClust was used as a package for the analysis of the ABT data and PBMC data. dropClust works on a SingleCellExperiment class object, so that first the datasets has been converted to sce class object.
+
+SingleCellExperiment (SCE) is a S4 class for storing data from single-cell experiments. This includes specialized methods to store and retrieve spike-in information, dimensionality reduction coordinates and size factors for each cell, along with the usual metadata for genes and libraries.
+
+# ABT DATASET
+
+Single-cell RNA sequencing on 10X Chromium platform:
+
+* Illumina HiSeq 4000, RNA-Seq
+* Organism - Homo sapiens
+* sex -	female
+* tissue - breast cancer
+
+Reference:
+
+Marczyk, M., Patwardhan, G. A., Zhao, J., Qu, R., Li, X., Wali, V. B., Gupta, A. K., Pillai, M. M., Kluger, Y., Yan, Q., Hatzis, C., Pusztai, L., & Gunasekharan, V. (2020). Multi-Omics Investigation of Innate Navitoclax Resistance in Triple-Negative Breast Cancer Cells. Cancers, 12(9), 2551. https://doi.org/10.3390/cancers12092551
+
+# Loading Libraries
+
+The first task is to load required libraries.
+
+* *dropClust* -> Efficient clustering of ultra-large scRNA-seq data
+* *scater* -> To find Quality Control Metrics and generate heatmap
+* *SingleCellExperiment* -> The SingleCellExperiment class is designed to represent single-cell sequencing data
+* *clValid* -> To find Dunn index and compare
+* *ggplot2* -> To visualize our data
+* *stats* -> Statistical Calculation suxh as finding euclidean distance
+* *PCAtools* -> To find PCA elbow point
+
+```{r message=FALSE, warning=FALSE}
+library(dropClust)
+library(scater)
+library(SingleCellExperiment)
+library(clValid)
+library(ggplot2)
+library(stats)
+library(PCAtools)
+set.seed(123)
+```
+
+# Loading Data
+
+Then, we should load the count matrix into memory and convert it to SingleCellExperiment object.
+
+```{r}
+sce <- SingleCellExperiment(list(counts=data_ABT))
+sce
+```
+
+```{r}
+dim(sce)
+class(sce)
+```
+
+# Seperating Different Samples
+
+One important aspect of single-cell RNA-seq is to control for batch effects. Batch effects are technical artefacts that are added to the samples during handling. For example, if two sets of samples were prepared in different labs or even on different days in the same lab, then we may observe greater similarities between the samples that were handled together. In the worst case scenario, batch effects may be mistaken for true biological variation.
+
+```{r}
+mat_ab<-as.matrix(counts(sce))
+a<-mat_ab[,1:1245]
+b<-mat_ab[,1246:2325]
+```
+
+## Sample A
+
+```{r}
+sce_a <- SingleCellExperiment(list(counts=a))
+sce_a
+```
+
+## Sample B
+
+```{r}
+sce_b <- SingleCellExperiment(list(counts=b))
+sce_b
+```
+
+# Quality control on the cells and genes
+
+Low-quality cells need to be removed to ensure that technical effects do not distort downstream analysis results. Two common measures of cell quality are the library size and the number of expressed features in each library.
+
+We first want to remove genes that have only zero counts since we'll never get information from these genes.
+
+```{r}
+# find non-zero counts
+nonZero_a <- (counts(sce_a) > 0)
+nonZero_b <- (counts(sce_b) > 0)
+
+# find rows/genes with at least one non-zero count 
+keepa <- (rowSums(nonZero_a) > 0)
+keepb <- (rowSums(nonZero_b) > 0)
+
+# keep only the genes with non-zero count the SCE object 
+sce_2a <- sce_a[keepa, ]
+sce_2b <- sce_b[keepb, ]
+
+# explore sce_2
+sce_2a
+```
+
+```{r}
+sce_2b
+```
+
+```{r}
+dim(sce_2a)
+dim(sce_2b)
+```
+
+## Quality Control Metrics
+
+Low-quality cells need to be removed to ensure that technical effects do not distort downstream analysis results. Two common measures of cell quality are the library size and the number of expressed features in each library. The library size is defined as the total sum of counts across all features. Cells with relatively small library sizes are considered to be of low quality as the RNA has not been efficiently captured during library preparation. The number of expressed features in each cell is defined as the number of features with non-zero counts for that cell. Any cell with very few expressed genes is likely to be of poor quality as the diverse transcript population has not been successfully captured.
+
+For each cell, we calculate quality control metrics such as the total number of counts.*perCellQCMetrics* function calculates useful QC metrics for identification and removal of potentially problematic cells. Obvious per-cell metrics are the sum of counts (i.e., the library size) and the number of detected features. The percentage of counts in the top features also provides a measure of library complexity.
+
+The sum column contains the total count for each cell and the detected column contains the number of detected genes.
+
+```{r}
+sce_a1 <- perCellQCMetrics(sce_2a)
+sce_b1 <- perCellQCMetrics(sce_2b)
+df_a <- data.frame(library_sizes=sce_a1$sum,number_expressed=sce_a1$detected,a_or_b="a")
+df_b <- data.frame(library_sizes=sce_b1$sum,number_expressed=sce_b1$detected,a_or_b="b")
+df <- rbind(df_a,df_b)
+ggplot(df,aes(library_sizes,fill=a_or_b)) + geom_histogram(binwidth=9000,alpha=.5,position = "identity") + xlab("Library sizes") + ylab("Number of cells") +
+  ggtitle("Histogram")
+```
+
+```{r}
+ggplot(df,aes(library_sizes)) + geom_histogram(binwidth = 7500,colour = "black",fill="lightblue") +
+  facet_grid(a_or_b ~ .) + xlab("Library sizes") + ylab("Number of cells") +
+  ggtitle("Histogram")
+```
+
+
+```{r}
+ggplot(df,aes(number_expressed,fill=a_or_b)) + geom_histogram(binwidth=250,alpha=.5,position = "identity") + xlab("Number of expressed genes") + ylab("Number of cells") +
+  ggtitle("Histogram")
+```
+
+```{r}
+ggplot(df,aes(number_expressed)) + geom_histogram(binwidth = 250,colour = "black",fill="lightblue") +
+  facet_grid(a_or_b ~ .) + xlab("Number of expressed genes") + ylab("Number of cells") +
+  ggtitle("Histogram")
+```
+
+Alternatively, users may prefer to use the addPerCellQC() function. This computes and appends the per-cell QC statistics to the colData of the SingleCellExperiment object, allowing us to retain all relevant information in a single object for later manipulation.
+
+A key assumption here is that the QC metrics are independent of the biological state of each cell. Poor values (e.g., low library sizes, high mitochondrial proportions) are presumed to be driven by technical factors rather than biological processes, meaning that the subsequent removal of cells will not misrepresent the biology in downstream analyses. Major violations of this assumption would potentially result in the loss of cell types that have, say, systematically low RNA content or high numbers of mitochondria.
+
+## Identifying low-quality cells with fixed thresholds
+
+The simplest approach to identifying low-quality cells is to apply thresholds on the QC metrics. For example, we might consider cells to be low quality if they have library sizes below 8,000 reads; express fewer than 3750 genes;
+
+This is adjusting threshold manually. We will cover automatic threshold next.
+
+```{r}
+qc.liba <- sce_a1$sum < 8000
+qc.nexprsa <- sce_a1$detected < 3750
+qc.libb <- sce_b1$sum < 8000
+qc.nexprsb <- sce_b1$detected < 3750
+
+discard_a <- qc.liba | qc.nexprsa
+discard_b <- qc.libb | qc.nexprsb
+# Summarize the number of cells removed for each reason.
+DataFrame(LibSize=sum(qc.liba),NExprs=sum(qc.nexprsa), Total=sum(discard_a))
+DataFrame(LibSize=sum(qc.libb),NExprs=sum(qc.nexprsb), Total=sum(discard_b))
+```
+
+While simple, this strategy requires considerable experience to determine appropriate thresholds for each experimental protocol and biological system. Thresholds for read count-based data are simply not applicable for UMI-based data, and vice versa. Differences in mitochondrial activity or total RNA content require constant adjustment of the mitochondrial and spike-in thresholds, respectively, for different biological systems. Indeed, even with the same protocol and system, the appropriate threshold can vary from run to run due to the vagaries of cDNA capture efficiency and sequencing depth per cell.
+
+## Identifying low-quality cells with adaptive thresholds
+
+### Identifying outliers
+
+To obtain an adaptive threshold, we assume that most of the dataset consists of high-quality cells. We then identify cells that are outliers for the various QC metrics, based on the median absolute deviation (MAD) from the median value of each metric across all cells. Specifically, a value is considered an outlier if it is more than 3 MADs from the median in the “problematic” direction. This is loosely motivated by the fact that such a filter will retain 99% of non-outlier values that follow a normal distribution.
+
+A log-transformation is used to improve resolution at small values when type="lower". Specifically, it guarantees that the threshold is not a negative value, which would be meaningless for a non-negative metric. Furthermore, it is not uncommon for the distribution of library sizes to exhibit a heavy right tail; the log-transformation avoids inflation of the MAD in a manner that might compromise outlier detection on the left tail. (More generally, it makes the distribution seem more normal to justify the 99% rationale mentioned above.)
+
+```{r}
+qc.lib2a <- isOutlier(sce_a1$sum, log=TRUE, type="lower")
+qc.nexprs2a <- isOutlier(sce_a1$detected, log=TRUE, type="lower")
+qc.lib2b <- isOutlier(sce_b1$sum, log=TRUE, type="lower")
+qc.nexprs2b <- isOutlier(sce_b1$detected, log=TRUE, type="lower")
+
+attr(qc.lib2a, "thresholds")
+attr(qc.nexprs2a, "thresholds")
+attr(qc.lib2b, "thresholds")
+attr(qc.nexprs2b, "thresholds")
+```
+
+isOutlier() will also return the exact filter thresholds for each metric in the attributes of the output vector. These are useful for checking whether the automatically selected thresholds are appropriate.
+
+### Filter cells with small library size with distribution plot
+
+We will put our automatic thresholds to the distribution plot and filter some low-quality cells for both sample A and sample B.
+
+```{r}
+threshold_a <- 14177.07
+threshold_b <- 11835.41
+ggplot(df,aes(library_sizes,fill=a_or_b)) + geom_density(alpha=.6) +
+  geom_vline(xintercept=threshold_a,color = "red") + geom_vline(xintercept=threshold_b,color = "blue") +
+  xlab("Library Sizes") + ylab("Density") +
+  ggtitle("Distribution")
+```
+
+
+```{r}
+# determine the cells to keep
+keep_a <- (sce_a1$sum > threshold_a)
+keep_b <- (sce_b1$sum > threshold_b)
+
+# tabulate the cells that were kept on the previous step
+table(keep_a)
+table(keep_b)
+```
+
+### Filter cells by number of expressed genes with distribution plot
+
+```{r}
+threshold_a <- 3817.267
+threshold_b <- 3663.476
+ggplot(df,aes(number_expressed,fill=a_or_b)) + geom_density(alpha=.6) +
+  geom_vline(xintercept=threshold_a,color = "red") + geom_vline(xintercept=threshold_b,color = "blue") +
+  xlab("Number of expressed genes") + ylab("Density") +
+  ggtitle("Distribution")
+```
+
+
+```{r}
+# determine the cells to keep
+keep2_a <- (sce_a1$detected > threshold_a)
+keep2_b <- (sce_b1$detected > threshold_b)
+
+# tabulate the cells that were kept on the previous step
+table(keep2_a)
+table(keep2_b)
+```
+
+A cell that is an outlier for any of these metrics is considered to be of low quality and discarded.
+
+```{r}
+discard2a <- qc.lib2a | qc.nexprs2a
+discard2b <- qc.lib2b | qc.nexprs2b
+
+# Summarize the number of cells removed for each reason.
+DataFrame(LibSize=sum(qc.lib2a), NExprs=sum(qc.nexprs2a), Total=sum(discard2a))
+DataFrame(LibSize=sum(qc.lib2b), NExprs=sum(qc.nexprs2b), Total=sum(discard2b))
+```
+
+Let's now filter the cells
+
+```{r}
+dim(sce_2a)
+sce_3a<-sce_2a[,!discard2a]
+dim(sce_3a)
+```
+
+1245 - 1176 = 69
+
+```{r}
+dim(sce_2b)
+sce_3b<-sce_2b[,!discard2b]
+dim(sce_3b)
+```
+1080 - 1029 = 51
+
+## Filtering out low-abundance genes with log10 average count
+
+Low-abundance genes are problematic as zero or near-zero counts do not contain enough information for reliable statistical inference. In addition, the discreteness of the counts may interfere with downstream statistical procedures, e.g., by compromising the accuracy of continuous approximations. Here, low-abundance genes are defined as those with an average count below a filter threshold of -1. These genes are likely to be dominated by drop-out events, which limits their usefulness in later analyses. Removal of these genes mitigates discreteness and reduces the amount of computational work without major loss of information.
+
+```{r}
+par(mfrow=c(2,1))
+ave.counts_a <- rowMeans(counts(sce_3a))
+hist(log10(ave.counts_a), breaks=100, main="", col="grey80",
+     xlab=expression(Log[10]~"average count"))
+abline(v=log10(0.1), col="blue", lwd=2, lty=2)
+ave.counts_b <- rowMeans(counts(sce_3b))
+hist(log10(ave.counts_b), breaks=100, main="", col="grey80",
+     xlab=expression(Log[10]~"average count"))
+abline(v=log10(0.1), col="blue", lwd=2, lty=2)
+```
+
+```{r}
+keep3a <- ave.counts_a >= 0.1
+sum(keep3a)
+table(keep3a)
+sce_3a<-sce_3a[keep3a, ]
+dim(sce_3a)
+```
+
+16530 - 11055 = 5475
+
+```{r}
+keep3b <- ave.counts_b >= 0.1
+sum(keep3b)
+table(keep3b)
+sce_3b<-sce_3b[keep3b, ]
+dim(sce_3b)
+```
+
+16531 - 11149 = 5382
+
+```{r}
+mat_x<-as.matrix(counts(sce_3b))
+x<-mat_x[1:11055,]
+sce_3b <- SingleCellExperiment(list(counts=x))
+sce <- cbind(sce_3a,sce_3b)
+```
+
+To check whether the chosen threshold is suitable, we examine the distribution of log-means across all genes. The peak represents the bulk of moderately expressed genes while the rectangular component corresponds to lowly expressed genes. The filter threshold should cut the distribution at some point along the rectangular component to remove the majority of low-abundance genes.
+
+# DropClust
+
+dropClust - Fast execution time, clustering accuracy and detectability of minor cell sub-types.
+
+## Pre-processing
+
+FilterCells() -> Keep only those cells (columns) expressing at least count = min_count in the number of genes specified within the quantile range between ql_th and qh_th
+
+FilterGenes() -> Filter genes with at least a count of min_count in at least min_cell cells
+
+Here was done in previous section
+
+```{r}
+# sce<-FilterCells(sce, min_count = 3, ql_th = 0.001, qh_th = 1)
+# sce<-FilterGenes(sce, min_count = 2, min_cell = 3)
+```
+
+## Data normalization and removing poor quality genes
+
+Compute normalized expression values from count data in a SingleCellExperiment object, using the median normalized total count stored in the object.
+
+```{r}
+set.seed(123)
+sce_norm<-CountNormalize(sce,return_log = FALSE)
+sce_norm<-logNormCounts(sce_norm) # scater
+normcounts<-list(normcounts(sce_norm))
+```
+
+Normalized expression values are computed by dividing the counts for each cell by median normalized total count of that cell. If log=TRUE, log-normalized values are calculated by adding a pseudocount of 1 to the normalized count and performing a log2 transformation.
+
+## Selecting highly variable genes
+
+Get variable genes from normalized UMI counts using Fano Factor metric.
+
+```{r}
+# Select Top Dispersed Genes by setting ngenes_keep.
+set.seed(123)
+sce_rank<-RankGenes(sce_norm, ngenes_keep = 1000)
+keep_highly_variable_gene<-rowData(sce_rank)[,"HVG"]
+sce_HVG<-sce_rank[keep_highly_variable_gene, ]
+dispersion_norm<-rowData(sce_HVG)[,"dispersion_norm"]
+```
+
+Compute Fano Factor metric for each gene. The metric computes the median absolute deviation of dispersion across multiple bins for each gene.
+
+A SingleCellExperiment object with an additional column named HVG in rowData column. The column stores a a logical value against each gene to indicate if it has been ranked within the top ngenes_keep. It also generates an additional column dispersion_norm in rowData to store the dispersion metric against each gene.
+
+```{r}
+# plot density
+plot(density(dispersion_norm), main = 'Density - Fano Factor')
+```
+
+## Structure Preserving Sampling
+
+Performs sampling from the primary clusters in an inverse exponential order of cluster size.
+
+```{r}
+set.seed(123)
+sce_sampling<-Sampling(sce_HVG, nsamples = 500, method = "sps",
+  optm_parameters = FALSE, pinit = 0.195, pfin = 0.9, K = 500)
+keep_sampling<-colData(sce_sampling)[,"Sampling"]
+sce_sampling<-sce_sampling[,keep_sampling]
+```
+
+Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function is used to determine the proportion of transcriptomes to be sampled from each cluster. For $i^th$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.
+pi = pl - e-(Si)/(K) where S_i is the size of cluster i, K is a scaling factor, p_i is the proportion of cells to be sampled from the $i^th$ Louvain cluster. $p_l$ and $p_u$ are lower and upper bounds of the proportion value respectively.
+
+A SingleCellExperiment object with an additional column named Sampling in colData column. The column stores a a logical value against each cell to indicate if it has been sampled.
+
+## Gene selection based on PCA
+
+Performs gene selection on sampled cells based on PCA loadings.
+
+To pick ideal PCA top value, we will use effective for loop and find ideal value by plotting top vs. dunn index plot. Then, we will put top parameter according to plot.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# Finding Best PCA with for loop
+a <- seq(250, 1000, by=50)
+b <- c()
+for (i in a){
+  set.seed(123)
+  sce_PCA<-RankPCAGenes(sce_sampling, top = i)
+  keep_PCA<-rowData(sce_PCA)[,"PCAGenes"]
+  sce_PCA<-sce_PCA[keep_PCA, ]
+  sce_cluster<-Cluster(sce_PCA, use.subsamples = TRUE, method = "louvian", k_nn = 10, conf = 0.75)
+  clusterIDs <- colData(sce_cluster)[,"Sample_ClusterIDs"]
+  data <- matrix(counts(sce_cluster),nrow = length(clusterIDs))
+  Dist <- dist(data,method="euclidean")
+  x <- dunn(clusters=as.vector(clusterIDs),distance = Dist)
+  b <- append(b,x)
+}
+```
+
+```{r}
+dunn_line <- data.frame(x_scale=a,
+                y_scale=b)
+ggplot(data=dunn_line, aes(x=x_scale, y=y_scale, group=1)) +
+  geom_line(linetype = "dashed")+
+  geom_point()
+```
+
+
+```{r}
+#Find PCA top 950 genes. This may take some time.
+set.seed(123)
+sce_PCA<-RankPCAGenes(sce_sampling, top = 950)
+keep_PCA<-rowData(sce_PCA)[,"PCAGenes"]
+sce_PCA<-sce_PCA[keep_PCA, ]
+```
+
+Genes are ranked for selection in 3 steps:
+
+1. First 50 principal components are obtained using Singular value Decomposition is used as implemented in the irlba R package.
+
+2. Among the first 50 components, top 10 components are selected in the order of their modality.
+
+3. Genes are ordered based on their average loadings in the rotation matrix containing the top 10 components.
+
+A SingleCellExperiment object with an additional column named PCAGenes in rowData column. The column stores a a logical value against each gene to indicate if it has been ranked within the top.
+
+## Clustering
+
+```{r}
+set.seed(123)
+sce_cluster<-Cluster(sce_PCA, use.subsamples = TRUE, method = "louvian", k_nn = 20, conf = 0.8)
+```
+
+Clustering is carried out in two alternate approaches on the sampled cells. For the default setting or quick identification of the existing broad clusters, a Louvain based partition is employed. Otherwise for fine-tuned clustering with outliers, hierarchical clustering is used with cutreeDynamic for dendrogram cut. Also, Assigns cluster membership to unsampled cells by using cluster membership information of the nearest neighbours. An approximate nearest neighbour graph is constructed out of the samples population using the find_ann() module. Some cells are left un-assigned when its neighbour's cluster membership doesn't form a majority as specified by the conf parameter. Unassigned cells (NA) are excluded in the plot or further downstream analysis.
+
+## Visualizing clusters
+
+```{r}
+set.seed(123)
+sce_plot<-PlotEmbedding(sce_cluster, embedding = "umap", spread = 10, min_dist = 1)
+plot_data = data.frame("Y1" = reducedDim(sce_plot,"umap")[,1], Y2 = reducedDim(sce_plot, "umap")[,2], color = sce_plot$ClusterIDs)
+```
+
+```{r}
+ScatterPlot(sce_plot,title = "Clusters")
+```
+```{r}
+vis_a <- data.frame(plot_data[0:623,],a_or_b="a")
+vis_b <- data.frame(plot_data[624:1287,],a_or_b="b")
+vis <- rbind(vis_a,vis_b)
+vis1 <- (plot_data[,1] + plot_data[,2]) / 2
+vis <- data.frame(vis,average=vis1)
+ggplot(vis,aes(color,average,color=a_or_b)) + geom_point() + xlab("Cluster") + ylab("UMAP") +
+  ggtitle("Scatter Plot")
+```
+
+```{r}
+print("For A Sample:")
+table(sce_plot$Sample_ClusterIDs[0:623])
+```
+
+```{r}
+print("For B Sample:")
+table(sce_plot$Sample_ClusterIDs[624:1287])
+```
+
+```{r}
+dc.corr <-  Correction(sce,  method="default", close_th = 0.1, cells_th = 0.1,
+                       components = 10, n_neighbors = 30,  min_dist = 1)
+```
+
+```{r}
+dc.corr = Cluster(dc.corr,method = "kmeans",centers = 2)
+```
+
+```{r}
+ScatterPlot(dc.corr, title = "Clusters")
+```
+
+
+## Metric
+
+```{r}
+clusterIDs <- colData(sce_cluster)[,"Sample_ClusterIDs"]
+data <- matrix(counts(sce_cluster),nrow = length(clusterIDs))
+Dist <- dist(data,method="euclidean")
+x <- dunn(clusters=as.vector(clusterIDs),distance = Dist)
+print(x)
+```
+
+Description -> Calculates the Dunn Index for a given clustering partition.
+
+*dunn(distance = NULL, clusters, Data = NULL, method = "euclidean")*
+
+* distance -> The distance matrix (as a matrix object) of the clustered observations. Required if Data is NULL.
+
+* clusters -> An integer vector indicating the cluster partitioning
+
+* Data -> The data matrix of the clustered observations. Required if distance is NULL.
+
+* method-> The metric used to determine the distance matrix. Not used if distance is provided.
+
+*The Dunn Index is the ratio of the smallest distance between observations not in the same cluster to the largest intra-cluster distance. The Dunn Index has a value between zero and infinity, and should be maximized. For details see the package vignette.*
+
+# Find cluster specific Differentially Expressed genes
+
+To interpret our clustering results, we identify the genes that drive separation between clusters. These marker genes allow us to assign biological meaning to each cluster based on their functional annotation. In the most obvious case, the marker genes for each cluster are a priori associated with particular cell types, allowing us to treat the clustering as a proxy for cell type identity. The same principle can be applied to discover more subtle differences between clusters (e.g., changes in activation or differentiation state) based on the behavior of genes in the affected pathways.
+
+Identification of marker genes is usually based around the retrospective detection of differential expression between clusters. Genes that are more strongly DE are more likely to have caused separate clustering of cells in the first place. Several different statistical tests are available to quantify the differences in expression profiles, and different approaches can be used to consolidate test results into a single ranking of genes for each cluster.
+
+We can find markers that define clusters via differential expression by using FindMarkers() function from dropClust.
+
+```{r}
+DE_genes_all = FindMarkers(sce_plot, selected_clusters=NA, lfc_th = 1, q_th =0.001, nDE=30)
+```
+
+```{r}
+write.csv(DE_genes_all$genes, 
+          file = file.path("C:/Users/Asus/Desktop/last_analysis/single-cell-project","genes_ABT.csv"),
+          quote = FALSE)
+```
+
+PlotHeatmap() generates an expression heatmap for given cells and features.
+
+```{r}
+p<-PlotHeatmap(sce_plot, DE_res = DE_genes_all$DE_res,nDE = 10)
+p
+```
+
+We include several tools for visualizing marker expression. PlotMarkers() (shows expression probability distributions across clusters via violin plot)
+
+```{r}
+rowData(sce_plot)$Symbol <- rownames(sce_plot)
+```
+
+```{r}
+a<-DE_genes_all$genes
+marker_genes = c("PFN1", "HOMEZ", "FTH1")
+violin<-PlotMarkers(sce_plot, marker_genes)
+```
+
+# Cell type annotation
+
+The most challenging task in scRNA-seq data analysis is arguably the interpretation of the results. Obtaining clusters of cells is fairly straightforward, but it is more difficult to determine what biological state is represented by each of those clusters. Doing so requires us to bridge the gap between the current dataset and prior biological knowledge, and the latter is not always available in a consistent and quantitative manner. Indeed, even the concept of a “cell type” is not clearly defined, with most practitioners possessing a “I’ll know it when I see it” intuition that is not amenable to computational analysis. As such, interpretation of scRNA-seq data is often manual and a common bottleneck in the analysis workflow.
+
+We can directly compare our expression profiles to published reference datasets where each sample or cell has already been annotated with its putative biological state by domain experts.
+
+A conceptually straightforward annotation approach is to compare the single-cell expression profiles with previously annotated reference datasets. Labels can then be assigned to each cell in our uncharacterized test dataset based on the most similar reference sample(s), for some definition of “similar”. This is a standard classification challenge that can be tackled by standard machine learning techniques such as random forests and support vector machines. Any published and labelled RNA-seq dataset (bulk or single-cell) can be used as a reference, though its reliability depends greatly on the expertise of the original authors who assigned the labels in the first place.
+
+*The celldex contains a number of curated reference datasets, mostly assembled from bulk RNA-seq or microarray data of sorted cell types. These references are often good enough for most applications provided that they contain the cell types that are expected in the test population. Here, we will use a reference constructed from Blueprint and ENCODE data (Martens and Stunnenberg 2013; The ENCODE Project Consortium 2012); this is obtained by calling the BlueprintEncode() function to construct a SummarizedExperiment containing log-expression values with curated labels for each sample.*
+
+```{r}
+# For demonstration purposes, we will use one of the 10X PBMC datasets as our test. While we have already applied quality control, normalization and clustering for this dataset, this is not strictly necessary. It is entirely possible to run SingleR() on the raw counts without any a priori quality control and filter on the annotation results at one’s leisure
+
+library(celldex)
+ref <- BlueprintEncodeData()
+ref
+```
+
+SingleR is an automatic annotation method for single-cell RNA sequencing (scRNAseq) data (Aran et al. 2019). Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. Thus, the burden of manually interpreting clusters and defining marker genes only has to be done once, for the reference dataset, and this biological knowledge can be propagated to new datasets in an automated manner.
+
+In this section, we will demonstrate the use of the SingleR method (Aran et al. 2019) for cell type annotation. This method assigns labels to cells based on the reference samples with the highest Spearman rank correlations, using only the marker genes between pairs of labels to focus on the relevant differences between cell types. It also performs a fine-tuning step for each cell where the correlations are recomputed with just the marker genes for the top-scoring labels. This aims to resolve any ambiguity between those labels by removing noise from irrelevant markers for other labels.
+
+```{r}
+# We call the SingleR() function to annotate each of our PBMCs with the main cell type labels from the Blueprint/ENCODE reference. This returns a DataFrame where each row corresponds to a cell in the test dataset and contains its label assignments.
+
+library(SingleR)
+pred <- SingleR(test=sce_plot, ref=ref, labels=ref$label.main)
+table(pred$labels)
+```
+
+We inspect the results using a heatmap of the per-cell and label scores. Ideally, each cell should exhibit a high score in one label relative to all of the others, indicating that the assignment to that label was unambiguous. This is largely the case for monocytes and B cells, whereas we see more ambiguity between CD4+ and CD8+ T cells (and to a lesser extent, NK cells).
+
+
+plotScoreHeatmap() displays the scores for all cells across all reference labels, which allows users to inspect the confidence of the predicted labels across the dataset. Ideally, each cell (i.e., column of the heatmap) should have one score that is obviously larger than the rest, indicating that it is unambiguously assigned to a single label. A spread of similar scores for a given cell indicates that the assignment is uncertain, though this may be acceptable if the uncertainty is distributed across similar cell types that cannot be easily resolved.
+
+```{r}
+plotScoreHeatmap(pred)
+```
+
+```{r}
+# Alternatively, we will also use the labels in ref$label.fine, which provide more resolution at the cost of speed and increased ambiguity in the assignments.
+
+pred2 <- SingleR(test=sce_plot, ref=ref, labels=ref$label.fine)
+table(pred2$labels)
+```
+
+```{r}
+pred2
+```
+
+Another diagnostic is based on the per-cell “deltas”, i.e., the difference between the score for the assigned label and the median across all labels for each cell. Low deltas indicate that the assignment is uncertain, which is especially relevant if the cell’s true label does not exist in the reference. We can inspect these deltas across cells for each label using the plotDeltaDistribution() function.
+
+```{r}
+plotDeltaDistribution(pred, ncol = 6)
+```
+
+```{r}
+summary(is.na(pred$pruned.labels))
+```
+
+
+We compare the assignments with the clustering results to determine the identity of each cluster. Here, several clusters are nested within the monocyte and B cell labels (Figure 12.2), indicating that the clustering represents finer subdivisions within the cell types. Interestingly, our clustering does not effectively distinguish between CD4+ and CD8+ T cell labels. This is probably due to the presence of other factors of heterogeneity within the T cell subpopulation (e.g., activation) that have a stronger influence on unsupervised methods than the a priori expected CD4+/CD8+ distinction.
+
+```{r}
+colLabels(sce_plot) <- factor(colData(sce_plot)$ClusterIDs)
+tab <- table(Assigned=pred$pruned.labels, Cluster=colLabels(sce_plot))
+
+# Adding a pseudo-count of 10 to avoid strong color jumps with just 1 cell.
+library(pheatmap)
+pheatmap(log2(tab+10), color=colorRampPalette(c("white", "blue"))(101))
+```
+
+This episode highlights some of the differences between reference-based annotation and unsupervised clustering. The former explicitly focuses on aspects of the data that are known to be interesting, simplifying the process of biological interpretation. However, the cost is that the downstream analysis is restricted by the diversity and resolution of the available labels, a problem that is largely avoided by de novo identification of clusters.
+
+```{r}
+all.markers <- metadata(pred)$de.genes
+sce_plot$labels <- pred$labels
+
+# Beta cell-related markers
+library(scater)
+plotHeatmap(sce_plot, order_columns_by="labels",
+    features=unique(unlist(all.markers$HSC)[1:30]))
+```
+
+```{r}
+plotHeatmap(sce_plot, order_columns_by="labels",
+    features=unique(unlist(all.markers$HSC)[31:60]))
+```
+
+Finally, a simple yet effective diagnostic is to examine the expression of the marker genes for each label in the test dataset. We extract the identity of the markers from the metadata of the SingleR() results and use them in the plotHeatmap() function from scater, as shown above for beta cell markers. If a cell in the test dataset is confidently assigned to a particular label, we would expect it to have strong expression of that label’s markers. At the very least, it should exhibit upregulation of those markers relative to cells assigned to other labels.

@@ -1,0 +1,5 @@
+"0","```r
+set.seed(123)
+sce_norm<-CountNormalize(sce)
+normcounts<-list(normcounts(sce_norm))
+```"

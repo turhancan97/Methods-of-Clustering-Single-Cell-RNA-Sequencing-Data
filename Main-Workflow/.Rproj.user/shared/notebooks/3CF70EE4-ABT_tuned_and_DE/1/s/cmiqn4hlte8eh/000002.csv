@@ -1,0 +1,8 @@
+"0","```r
+threshold_a <- 3817.267
+threshold_b <- 3663.476
+ggplot(df,aes(number_expressed,fill=a_or_b)) + geom_density(alpha=.6) +
+  geom_vline(xintercept=threshold_a,color = \"red\") + geom_vline(xintercept=threshold_b,color = \"blue\") +
+  xlab(\"Number of expressed genes\") + ylab(\"Density\") +
+  ggtitle(\"Distribution\")
+```"

@@ -1,0 +1,153 @@
+---
+title: "ABT Dataset - Default Parameters"
+output: html_notebook
+---
+# Loading Libraries
+
+The first task is to load required libraries.
+
+```{r message=FALSE, warning=FALSE}
+library(dropClust)
+library(scater)
+library(SingleCellExperiment)
+library(ggplot2)
+library(clValid)
+set.seed(123)
+```
+
+# Loading Data
+Then, we should load the count matrix into memory and convert it to SingleCellExperiment object.
+
+```{r}
+sce <- SingleCellExperiment(list(counts=data_ABT))
+sce
+```
+
+# DropClust
+
+dropClust - Fast execution time, clustering accuracy and detectability of minor cell sub-types.
+
+## Pre-processing
+
+FilterCells() -> Keep only those cells (columns) expressing at least count = min_count in the number of genes specified within the quantile range between ql_th and qh_th
+
+FilterGenes() -> Filter genes with at least a count of min_count in at least min_cell cells
+
+Here was done in previous section
+
+```{r}
+sce<-FilterCells(sce)
+sce<-FilterGenes(sce)
+```
+
+## Data normalization and removing poor quality genes
+
+Compute normalized expression values from count data in a SingleCellExperiment object, using the median normalized total count stored in the object.
+
+```{r}
+set.seed(123)
+sce_norm<-CountNormalize(sce)
+normcounts<-list(normcounts(sce_norm))
+```
+
+Normalized expression values are computed by dividing the counts for each cell by median normalized total count of that cell. If log=TRUE, log-normalized values are calculated by adding a pseudocount of 1 to the normalized count and performing a log2 transformation.
+
+## Selecting highly variable genes
+
+Get variable genes from normalized UMI counts using Fano Factor metric.
+
+```{r}
+# Select Top Dispersed Genes by setting ngenes_keep.
+set.seed(123)
+sce_rank<-RankGenes(sce_norm, ngenes_keep = 1000)
+keep_highly_variable_gene<-rowData(sce_rank)[,"HVG"]
+sce_HVG<-sce_rank[keep_highly_variable_gene, ]
+dispersion_norm<-rowData(sce_HVG)[,"dispersion_norm"]
+```
+
+Compute Fano Factor metric for each gene. The metric computes the median absolute deviation of dispersion across multiple bins for each gene.
+
+A SingleCellExperiment object with an additional column named HVG in rowData column. The column stores a a logical value against each gene to indicate if it has been ranked within the top ngenes_keep. It also generates an additional column dispersion_norm in rowData to store the dispersion metric against each gene.
+
+## Structure Preserving Sampling
+
+Performs sampling from the primary clusters in an inverse exponential order of cluster size.
+
+```{r}
+set.seed(123)
+sce_sampling<-Sampling(sce_HVG)
+keep_sampling<-colData(sce_sampling)[,"Sampling"]
+sce_sampling<-sce_sampling[,keep_sampling]
+```
+
+Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function is used to determine the proportion of transcriptomes to be sampled from each cluster. For $i^th$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.
+pi = pl - e-(Si)/(K) where S_i is the size of cluster i, K is a scaling factor, p_i is the proportion of cells to be sampled from the $i^th$ Louvain cluster. $p_l$ and $p_u$ are lower and upper bounds of the proportion value respectively.
+
+A SingleCellExperiment object with an additional column named Sampling in colData column. The column stores a a logical value against each cell to indicate if it has been sampled.
+
+## Gene selection based on PCA
+
+Performs gene selection on sampled cells based on PCA loadings
+
+```{r}
+# Find PCA top 500 genes. This may take some time.
+set.seed(123)
+sce_PCA<-RankPCAGenes(sce_sampling)
+keep_PCA<-rowData(sce_PCA)[,"PCAGenes"]
+sce_PCA<-sce_PCA[keep_PCA, ]
+```
+
+Genes are ranked for selection in 3 steps:
+
+1. First 50 principal components are obtained using Singular value Decomposition is used as implemented in the irlba R package.
+
+2. Among the first 50 components, top 10 components are selected in the order of their modality.
+
+3. Genes are ordered based on their average loadings in the rotation matrix containing the top 10 components.
+
+A SingleCellExperiment object with an additional column named PCAGenes in rowData column. The column stores a a logical value against each gene to indicate if it has been ranked within the top.
+## Clustering
+
+```{r}
+set.seed(123)
+sce_cluster<-Cluster(sce_PCA, method = "default", conf = 0.8)
+```
+
+Clustering is carried out in two alternate approaches on the sampled cells. For the default setting or quick identification of the existing broad clusters, a Louvain based partition is employed. Otherwise for fine-tuned clustering with outliers, hierarchical clustering is used with cutreeDynamic for dendrogram cut. Also, Assigns cluster membership to unsampled cells by using cluster membership information of the nearest neighbours. An approximate nearest neighbour graph is constructed out of the samples population using the find_ann() module. Some cells are left un-assigned when its neighbour's cluster membership doesn't form a majority as specified by the conf parameter. Unassigned cells (NA) are excluded in the plot or further downstream analysis.
+
+## Visualizing clusters
+
+```{r}
+set.seed(123)
+sce_plot<-PlotEmbedding(sce_cluster, embedding = "umap", spread = 10, min_dist = 0.1)
+plot_data = data.frame("Y1" = reducedDim(sce_plot,"umap")[,1], Y2 = reducedDim(sce_plot, "umap")[,2], color = sce_plot$ClusterIDs)
+```
+
+```{r}
+ScatterPlot(sce_plot,title = "Clusters")
+```
+
+
+## Metric
+
+```{r}
+clusterIDs <- colData(sce_cluster)[,"Sample_ClusterIDs"]
+data <- matrix(counts(sce_cluster),nrow = length(clusterIDs))
+Dist <- dist(data,method="euclidean")
+x <- dunn(clusters=as.vector(clusterIDs),distance = Dist)
+print(x)
+```
+
+Description -> Calculates the Dunn Index for a given clustering partition.
+
+*dunn(distance = NULL, clusters, Data = NULL, method = "euclidean")*
+
+distance -> The distance matrix (as a matrix object) of the clustered observations. Required if Data is NULL.
+
+clusters -> An integer vector indicating the cluster partitioning
+
+Data -> The data matrix of the clustered observations. Required if distance is NULL.
+
+method-> The metric used to determine the distance matrix. Not used if distance is provided.
+
+*The Dunn Index is the ratio of the smallest distance between observations not in the same cluster to the largest intra-cluster distance. The Dunn Index has a value between zero and infinity, and should be maximized. For details see the package vignette.*

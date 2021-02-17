@@ -1,0 +1,5 @@
+"0","# To merge sample A and sample B, but we will not use this merged data. We will use our raw data."
+"0","mat_x<-as.matrix(counts(sce_3b))"
+"0","x<-mat_x[1:11055,]"
+"0","sce_3b <- SingleCellExperiment(list(counts=x))"
+"0","sce_merged <- cbind(sce_3a,sce_3b)"

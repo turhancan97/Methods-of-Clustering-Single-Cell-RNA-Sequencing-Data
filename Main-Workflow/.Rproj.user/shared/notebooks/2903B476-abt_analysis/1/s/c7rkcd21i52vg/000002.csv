@@ -1,0 +1,17 @@
+"0","dc.corr <-  Correction(sce,  method=""default"", close_th = 0.1, cells_th = 0.1,"
+"0","                       components = 10, n_neighbors = 30,  min_dist = 1)"
+"1","Batch correcting...
+"
+"1","from"
+"1"," "
+"1","11055"
+"1"," "
+"1","to"
+"1"," "
+"1","10055"
+"1"," "
+"1","genes.
+"
+"1","Embedding with UMAP..."
+"1","Done
+"

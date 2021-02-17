@@ -1,0 +1,15 @@
+"0","```r
+sce_2b
+```"
+"1","class: SingleCellExperiment 
+dim: 16531 1080 
+metadata(0):
+assays(1): counts
+rownames(16531): A1BG A1BG-AS1 ... ZZEF1 ZZZ3
+rowData names(0):
+colnames(1080): AAACCTGCACCTATCC-1_1b AAACCTGGTCCGAAGA-1_1b ...
+  TTTGGTTAGGGCATGT-1_1b TTTGGTTCATTGAGCT-1_1b
+colData names(0):
+reducedDimNames(0):
+altExpNames(0):
+"

@@ -1,0 +1,8 @@
+"0","```r
+qc.lib2 <- isOutlier(sce_2$sum, log=TRUE, type=\"lower\")
+qc.nexprs2 <- isOutlier(sce_2$detected, log=TRUE, type=\"lower\")
+# qc.mito2 <- isOutlier(sce_2$subsets_Mito_percent, type=\"higher\")
+# attr(qc.mito2, \"thresholds\")
+attr(qc.lib2, \"thresholds\")
+attr(qc.nexprs2, \"thresholds\")
+```"

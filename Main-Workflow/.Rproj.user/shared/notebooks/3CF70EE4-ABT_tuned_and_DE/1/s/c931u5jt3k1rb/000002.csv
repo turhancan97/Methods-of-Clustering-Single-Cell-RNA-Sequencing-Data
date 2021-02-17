@@ -1,0 +1,6 @@
+"0","```r
+mat_x<-as.matrix(counts(sce_3b))
+x<-mat_x[1:11055,]
+sce_3b <- SingleCellExperiment(list(counts=x))
+sce <- cbind(sce_3a,sce_3b)
+```"

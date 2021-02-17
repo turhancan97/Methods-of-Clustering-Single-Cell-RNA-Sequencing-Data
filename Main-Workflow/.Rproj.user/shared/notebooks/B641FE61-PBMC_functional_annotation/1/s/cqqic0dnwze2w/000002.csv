@@ -1,0 +1,5 @@
+"0","```r
+library(SingleR)
+pred <- SingleR(test=sce_plot, ref=ref, labels=ref$label.main)
+table(pred$labels)
+```"

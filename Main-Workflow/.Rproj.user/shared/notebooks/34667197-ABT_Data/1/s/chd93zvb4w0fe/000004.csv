@@ -1,0 +1,15 @@
+"0","```r
+# determine the cells to keep
+keep <- (sce_2$sum > threshold )
+# tabulate the cells that were kept on the previous step
+table(keep)
+```"
+"1","keep
+FALSE  TRUE 
+  203  2122 
+"
+"1","Warning in gzfile(file, \"wb\") :
+  cannot open compressed file 'C:/Users/asus/Desktop/Silezya_Proje/Proje_Dosyalari/Single-Cell-Project/Methods-of-clustering-single-cell-RNA-sequencing-data/Clustering Methods/.Rproj.user/shared/notebooks/D7636361-ABT_Data/1/19B674E0124F3BCC/cut3251peijky_t/0233ef33519c431eaf394aff7182fbee.snapshot', probable reason 'No such file or directory'
+Error in gzfile(file, \"wb\") : cannot open the connection
+Error: no more error handlers available (recursive errors?); invoking 'abort' restart
+"

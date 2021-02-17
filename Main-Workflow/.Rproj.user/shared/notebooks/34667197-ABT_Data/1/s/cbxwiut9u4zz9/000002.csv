@@ -1,0 +1,13 @@
+"0","```r
+sce_2 <- perCellQCMetrics(sce_2)
+par(mfrow=c(1,2))
+hist(sce_2$total/1e5, xlab=\"Library sizes\", main=\"\",
+breaks=20, col=\"grey80\", ylab=\"Number of cells\")
+hist(sce_2$detected, xlab=\"Number of expressed genes\", main=\"\",
+breaks=20, col=\"grey80\", ylab=\"Number of cells\")
+```"
+"1","Warning in gzfile(file, \"wb\") :
+  cannot open compressed file 'C:/Users/asus/Desktop/Silezya_Proje/Proje_Dosyalari/Single-Cell-Project/Methods-of-clustering-single-cell-RNA-sequencing-data/Clustering Methods/.Rproj.user/shared/notebooks/D7636361-ABT_Data/1/19B674E0124F3BCC/csj8opv9q08op_t/5fdaad63e792415389f34e0622183e4a.snapshot', probable reason 'No such file or directory'
+Error in gzfile(file, \"wb\") : cannot open the connection
+Error: no more error handlers available (recursive errors?); invoking 'abort' restart
+"

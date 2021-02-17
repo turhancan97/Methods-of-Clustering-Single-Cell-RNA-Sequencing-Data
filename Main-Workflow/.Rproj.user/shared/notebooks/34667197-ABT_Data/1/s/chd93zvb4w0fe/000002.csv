@@ -1,0 +1,6 @@
+"0","```r
+threshold <- 20000
+# plot density
+plot(density(sce_2$sum), main = 'Density - total_counts')
+abline(v = threshold)
+```"

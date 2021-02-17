@@ -1,0 +1,11 @@
+"0","```r
+sce<-Cluster(sce, use.subsamples = TRUE, method = \"default\",k_nn = 10, conf = 0.8)
+```"
+"1","1145 samples and 500 genes used for clustering.
+Build Graph with 1145 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 991 
+Number of Predicted Clusters: 5 
+"

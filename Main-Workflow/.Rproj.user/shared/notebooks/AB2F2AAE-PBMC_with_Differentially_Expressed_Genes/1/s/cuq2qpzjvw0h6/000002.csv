@@ -1,0 +1,11 @@
+"0","```r
+dim(sce)
+```"
+"1","[1] 15601  8381
+"
+"0","```r
+sce_3<-sce[,!discard] # We will use manually threshold value
+dim(sce_3)
+```"
+"1","[1] 15601  8121
+"

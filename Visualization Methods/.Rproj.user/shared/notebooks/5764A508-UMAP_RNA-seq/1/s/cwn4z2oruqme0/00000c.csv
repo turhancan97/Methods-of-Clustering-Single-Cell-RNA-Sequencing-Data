@@ -1,0 +1,9 @@
+"0","# load your omic data here as mydata"
+"0","library(M3C)"
+"0","umap(pollen$data,colvec=c('skyblue'))"
+"2","***UMAP wrapper function***
+"
+"2","running...
+"
+"2","done.
+"

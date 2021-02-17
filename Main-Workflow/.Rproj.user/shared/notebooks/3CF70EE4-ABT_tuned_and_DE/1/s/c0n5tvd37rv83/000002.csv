@@ -1,0 +1,8 @@
+"0","```r
+dc.corr <-  Correction(sce,  method=\"default\", close_th = 0.1, cells_th = 0.1,
+                       components = 10, n_neighbors = 30,  min_dist = 1)
+```"
+"1","Batch correcting...
+from 11055 to 10055 genes.
+Embedding with UMAP...Done
+"

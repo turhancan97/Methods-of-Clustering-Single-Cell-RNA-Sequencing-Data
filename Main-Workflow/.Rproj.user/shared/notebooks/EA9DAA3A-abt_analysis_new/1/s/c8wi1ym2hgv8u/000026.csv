@@ -1,0 +1,3 @@
+"0","ave.counts_b <- rowMeans(counts(sce_2b))"
+"0","hist(log10(ave.counts_b), breaks=100, main="""", col=""grey80"","
+"0","     xlab=expression(Log[10]~""average count""))"

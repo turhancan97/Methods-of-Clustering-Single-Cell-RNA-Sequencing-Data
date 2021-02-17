@@ -1,0 +1,18 @@
+"0","```r
+# determine the cells to keep
+keep2_a <- (sce_a1$detected > threshold_a)
+keep2_b <- (sce_b1$detected > threshold_b)
+# tabulate the cells that were kept on the previous step
+table(keep2_a)
+```"
+"1","keep2_a
+FALSE  TRUE 
+   69  1176 
+"
+"0","```r
+table(keep2_b)
+```"
+"1","keep2_b
+FALSE  TRUE 
+   51  1029 
+"

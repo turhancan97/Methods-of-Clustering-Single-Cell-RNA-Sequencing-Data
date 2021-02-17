@@ -1,0 +1,11 @@
+"0","# make random data"
+"0","var <- seq(1,ncol(pollen$data))"
+"0","# do plot"
+"0","umap(pollen$data,labels=var,controlscale=TRUE,scale=1,"
+"0","legendtitle='var',printres = TRUE,printwidth = 24)"
+"2","***UMAP wrapper function***
+"
+"2","running...
+"
+"2","printing UMAP to current directory...
+"

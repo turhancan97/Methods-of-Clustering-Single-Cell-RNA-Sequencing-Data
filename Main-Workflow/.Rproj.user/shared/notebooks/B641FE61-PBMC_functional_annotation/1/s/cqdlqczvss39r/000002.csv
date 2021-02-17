@@ -1,0 +1,4 @@
+"0","```r
+sce <- SingleCellExperiment(list(counts=data_PBMC))
+sce
+```"

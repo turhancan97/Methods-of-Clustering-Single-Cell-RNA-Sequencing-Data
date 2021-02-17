@@ -1,0 +1,12 @@
+"0","```r
+set.seed(123)
+sce_sampling<-Sampling(sce_HVG, nsamples = 500, method = \"sps\",
+  optm_parameters = FALSE, pinit = 0.195, pfin = 0.9, K = 500)
+```"
+"1","Building graph with 8121 nodes...Louvain Partition...Done.
+2309 samples extracted.
+"
+"0","```r
+keep_sampling<-colData(sce_sampling)[,\"Sampling\"]
+sce_sampling<-sce_sampling[,keep_sampling]
+```"

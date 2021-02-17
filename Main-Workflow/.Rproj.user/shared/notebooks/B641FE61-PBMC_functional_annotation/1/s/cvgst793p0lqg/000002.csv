@@ -1,0 +1,7 @@
+"0","```r
+keep4 <- ave.counts >= 0.01
+sum(keep4)
+table(keep4)
+sce<-sce_3[keep4, ]
+dim(sce)
+```"

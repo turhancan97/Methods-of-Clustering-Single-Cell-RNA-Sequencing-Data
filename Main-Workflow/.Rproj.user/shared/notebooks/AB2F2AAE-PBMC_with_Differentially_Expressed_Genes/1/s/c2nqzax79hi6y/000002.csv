@@ -1,0 +1,11 @@
+"0","```r
+# set threshold
+## threshold <- 2.352649
+# plot density
+## plot(density(sce_2$subsets_Mito_percent), main = 'Density - subset_mito_percent')
+## abline(v = threshold)
+# determine the cells to keep
+## keep3 <- (sce_2$subsets_Mito_percent < threshold )
+# tabulate the cells that were kept on the previous step
+## table(keep3)
+```"

@@ -1,0 +1,4 @@
+"0","# Find expressed cell per gene"
+"0","# colSums(assay(sce))"
+"0","# Find expressed gene per cell"
+"0","# rowSums(assay(sce))"

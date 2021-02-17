@@ -1,0 +1,7 @@
+"0","```r
+dunn_line <- data.frame(x_scale=a,
+                y_scale=b)
+ggplot(data=dunn_line, aes(x=x_scale, y=y_scale, group=1)) +
+  geom_line(linetype = \"dashed\")+
+  geom_point()
+```"

@@ -1,0 +1,19 @@
+"0","```r
+keep4 <- ave.counts >= 0.1
+sum(keep4)
+```"
+"1","[1] 11099
+"
+"0","```r
+table(keep4)
+```"
+"1","keep4
+FALSE  TRUE 
+ 5989 11099 
+"
+"0","```r
+sce<-sce_3[keep4, ]
+dim(sce)
+```"
+"1","[1] 11099  2205
+"

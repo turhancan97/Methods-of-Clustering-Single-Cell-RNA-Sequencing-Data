@@ -1,0 +1,3 @@
+"0","a<-DE_genes_all$genes"
+"0","marker_genes = c(""PFN1"", ""HOMEZ"", ""FTH1"")"
+"0","violin<-PlotMarkers(sce_plot, marker_genes)"

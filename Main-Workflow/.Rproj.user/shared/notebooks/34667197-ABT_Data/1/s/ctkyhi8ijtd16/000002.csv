@@ -1,0 +1,4 @@
+"0","```r
+sce_2 <- sce_2[,!(libsize.drop | feature.drop)]
+data.frame(ByLibSize=sum(libsize.drop), ByFeature=sum(feature.drop),Remaining=ncol(sce))
+```"

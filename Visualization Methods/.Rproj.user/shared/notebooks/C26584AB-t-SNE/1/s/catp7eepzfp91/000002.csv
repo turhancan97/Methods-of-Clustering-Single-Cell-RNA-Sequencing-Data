@@ -1,0 +1,9 @@
+"0","pca(pollen$data,labels=scale(as.numeric(pollen$data[row.names(pollen$data)=='HBG1',])),"
+"0","controlscale=TRUE,scale=2,text=pollen$celltypes,"
+"0","textlabelsize = 2)"
+"2","***PCA wrapper function***
+"
+"2","running...
+"
+"2","done.
+"

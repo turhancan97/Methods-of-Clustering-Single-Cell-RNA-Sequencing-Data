@@ -1,0 +1,7 @@
+"0","```r
+# Select Top Dispersed Genes by setting ngenes_keep.
+sce<-RankGenes(sce, ngenes_keep = 5000)
+```"
+"1","Sort Top Genes...
+Cutoff Genes...
+"

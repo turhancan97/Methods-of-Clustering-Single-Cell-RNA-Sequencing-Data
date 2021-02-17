@@ -1,0 +1,7 @@
+"0","vis_a <- data.frame(plot_data[0:623,],a_or_b=""a"")"
+"0","vis_b <- data.frame(plot_data[624:1287,],a_or_b=""b"")"
+"0","vis <- rbind(vis_a,vis_b)"
+"0","vis1 <- (plot_data[,1] + plot_data[,2]) / 2"
+"0","vis <- data.frame(vis,average=vis1)"
+"0","ggplot(vis,aes(color,average,color=a_or_b)) + geom_point() + xlab(""Cluster"") + ylab(""UMAP"") +"
+"0","  ggtitle(""Scatter Plot"")"

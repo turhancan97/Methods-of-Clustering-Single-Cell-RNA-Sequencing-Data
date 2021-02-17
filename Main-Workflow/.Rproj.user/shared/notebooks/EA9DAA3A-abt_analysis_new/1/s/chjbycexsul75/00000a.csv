@@ -1,0 +1,3 @@
+"0","ggplot(df,aes(number_expressed)) + geom_histogram(binwidth = 250,colour = ""black"",fill=""lightblue"") +"
+"0","  facet_grid(a_or_b ~ .) + xlab(""Number of expressed genes"") + ylab(""Number of cells"") +"
+"0","  ggtitle(""Histogram"")"

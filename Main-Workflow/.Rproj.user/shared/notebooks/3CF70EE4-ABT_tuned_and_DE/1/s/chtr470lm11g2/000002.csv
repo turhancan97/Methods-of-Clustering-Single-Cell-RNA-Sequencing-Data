@@ -1,0 +1,4 @@
+"0","```r
+p<-PlotHeatmap(sce_plot, DE_res = DE_genes_all$DE_res,nDE = 10)
+p
+```"

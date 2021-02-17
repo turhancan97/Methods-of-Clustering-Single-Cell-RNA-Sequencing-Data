@@ -1,0 +1,4 @@
+"0","```r
+libsize.drop <- isOutlier(sce_2$sum, nmads=3, type=\"lower\", log=TRUE)
+feature.drop <- isOutlier(sce_2$detected, nmads=3, type=\"lower\", log=TRUE)
+```"

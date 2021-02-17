@@ -1,0 +1,9 @@
+"0","```r
+sce_a1 <- perCellQCMetrics(sce_2a)
+sce_b1 <- perCellQCMetrics(sce_2b)
+df_a <- data.frame(library_sizes=sce_a1$sum,number_expressed=sce_a1$detected,a_or_b=\"a\")
+df_b <- data.frame(library_sizes=sce_b1$sum,number_expressed=sce_b1$detected,a_or_b=\"b\")
+df <- rbind(df_a,df_b)
+ggplot(df,aes(library_sizes,fill=a_or_b)) + geom_histogram(binwidth=9000,alpha=.5,position = \"identity\") + xlab(\"Library sizes\") + ylab(\"Number of cells\") +
+  ggtitle(\"Histogram\")
+```"

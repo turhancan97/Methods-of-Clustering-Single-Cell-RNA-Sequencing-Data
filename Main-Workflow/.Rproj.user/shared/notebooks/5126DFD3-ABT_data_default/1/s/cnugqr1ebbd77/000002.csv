@@ -1,0 +1,12 @@
+"0","```r
+set.seed(123)
+sce_cluster<-Cluster(sce_PCA, method = \"default\", conf = 0.8)
+```"
+"1","1314 samples and 200 genes used for clustering.
+Build Graph with 1314 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 445 
+Number of Predicted Clusters: 7 
+"

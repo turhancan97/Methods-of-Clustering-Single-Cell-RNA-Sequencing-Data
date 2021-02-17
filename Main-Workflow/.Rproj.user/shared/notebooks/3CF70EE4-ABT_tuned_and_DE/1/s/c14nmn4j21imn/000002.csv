@@ -1,0 +1,19 @@
+"0","```r
+discard2a <- qc.lib2a | qc.nexprs2a
+discard2b <- qc.lib2b | qc.nexprs2b
+# Summarize the number of cells removed for each reason.
+DataFrame(LibSize=sum(qc.lib2a), NExprs=sum(qc.nexprs2a), Total=sum(discard2a))
+```"
+"1","DataFrame with 1 row and 3 columns
+    LibSize    NExprs     Total
+  <integer> <integer> <integer>
+1        44        69        69
+"
+"0","```r
+DataFrame(LibSize=sum(qc.lib2b), NExprs=sum(qc.nexprs2b), Total=sum(discard2b))
+```"
+"1","DataFrame with 1 row and 3 columns
+    LibSize    NExprs     Total
+  <integer> <integer> <integer>
+1        26        51        51
+"

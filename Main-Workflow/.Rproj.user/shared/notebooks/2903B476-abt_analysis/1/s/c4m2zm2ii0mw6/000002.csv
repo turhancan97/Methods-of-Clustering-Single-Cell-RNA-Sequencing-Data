@@ -1,0 +1,6 @@
+"0","all.markers <- metadata(pred)$de.genes"
+"0","sce_plot$labels <- pred$labels"
+"0","# Beta cell-related markers"
+"0","library(scater)"
+"0","plotHeatmap(sce_plot, order_columns_by=""labels"","
+"0","    features=unique(unlist(all.markers$HSC)[1:30]))"

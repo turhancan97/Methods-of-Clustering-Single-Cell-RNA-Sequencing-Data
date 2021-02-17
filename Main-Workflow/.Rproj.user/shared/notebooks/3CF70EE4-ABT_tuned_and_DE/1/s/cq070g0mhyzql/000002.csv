@@ -1,0 +1,5 @@
+"0","```r
+ggplot(df,aes(library_sizes)) + geom_histogram(binwidth = 7500,colour = \"black\",fill=\"lightblue\") +
+  facet_grid(a_or_b ~ .) + xlab(\"Library sizes\") + ylab(\"Number of cells\") +
+  ggtitle(\"Histogram\")
+```"

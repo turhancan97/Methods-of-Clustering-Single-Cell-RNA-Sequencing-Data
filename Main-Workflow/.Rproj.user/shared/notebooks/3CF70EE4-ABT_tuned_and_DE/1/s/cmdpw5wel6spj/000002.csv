@@ -1,0 +1,5 @@
+"0","```r
+write.csv(DE_genes_all$genes, 
+          file = file.path(\"C:/Users/Asus/OneDrive/MasaÃ¼stÃ¼/dropClust/ggplot\",\"genes_ABT.csv\"),
+          quote = FALSE)
+```"

@@ -1,0 +1,5 @@
+"0","```r
+a<-DE_genes_all$genes
+marker_genes = c(\"PFN1\", \"HOMEZ\", \"FTH1\")
+violin<-PlotMarkers(sce_plot, marker_genes)
+```"

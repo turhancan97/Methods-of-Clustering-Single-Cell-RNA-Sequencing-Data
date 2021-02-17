@@ -1,0 +1,162 @@
+"0","```r
+# Finding Best PCA with for loop
+a <- seq(250, 1000, by=50)
+b <- c()
+for (i in a){
+  set.seed(123)
+  sce_PCA<-RankPCAGenes(sce_sampling, top = i)
+  keep_PCA<-rowData(sce_PCA)[,\"PCAGenes\"]
+  sce_PCA<-sce_PCA[keep_PCA, ]
+  sce_cluster<-Cluster(sce_PCA, use.subsamples = TRUE, method = \"louvian\", k_nn = 10, conf = 0.75)
+  clusterIDs <- colData(sce_cluster)[,\"Sample_ClusterIDs\"]
+  data <- matrix(counts(sce_cluster),nrow = length(clusterIDs))
+  Dist <- dist(data,method=\"euclidean\")
+  x <- dunn(clusters=as.vector(clusterIDs),distance = Dist)
+  b <- append(b,x)
+}
+```"
+"1","Find best PCA components...[1] 1287 1000
+250 genes selected.
+1287 samples and 250 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 410 
+Number of Predicted Clusters: 9 
+Find best PCA components...[1] 1287 1000
+300 genes selected.
+1287 samples and 300 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 355 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+350 genes selected.
+1287 samples and 350 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 372 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+400 genes selected.
+1287 samples and 400 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 408 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+450 genes selected.
+1287 samples and 450 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 459 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+500 genes selected.
+1287 samples and 500 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 406 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+550 genes selected.
+1287 samples and 550 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 437 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+600 genes selected.
+1287 samples and 600 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 397 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+650 genes selected.
+1287 samples and 650 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 429 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+700 genes selected.
+1287 samples and 700 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 475 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+750 genes selected.
+1287 samples and 750 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 498 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+800 genes selected.
+1287 samples and 800 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 490 
+Number of Predicted Clusters: 8 
+Find best PCA components...[1] 1287 1000
+850 genes selected.
+1287 samples and 850 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 384 
+Number of Predicted Clusters: 6 
+Find best PCA components...[1] 1287 1000
+900 genes selected.
+1287 samples and 900 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 483 
+Number of Predicted Clusters: 7 
+Find best PCA components...[1] 1287 1000
+950 genes selected.
+1287 samples and 950 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 435 
+Number of Predicted Clusters: 7 
+Find best PCA components...[1] 1287 1000
+1000 genes selected.
+1287 samples and 1000 genes used for clustering.
+Build Graph with 1287 samples...Done.
+Louvain Partitioning...Done.
+Find nearest neighbours among sub-samples...Done.
+Post-hoc Cluster Assignment...Done.
+Unassigned Cells 450 
+Number of Predicted Clusters: 7 
+"

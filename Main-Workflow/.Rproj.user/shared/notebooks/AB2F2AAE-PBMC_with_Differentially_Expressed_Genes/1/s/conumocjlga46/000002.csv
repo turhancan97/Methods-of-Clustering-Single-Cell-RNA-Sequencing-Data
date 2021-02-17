@@ -1,0 +1,16 @@
+"0","```r
+sce <- SingleCellExperiment(list(counts=data_PBMC))
+sce
+```"
+"1","class: SingleCellExperiment 
+dim: 15601 8381 
+metadata(0):
+assays(1): counts
+rownames(15601): ENSG00000279928 ENSG00000279457 ... MT-ND6 MT-CYB
+rowData names(0):
+colnames(8381): AAACCTGAGCATCATC AAACCTGAGCTAACTC ... TTTGTCATCTCGAGTA
+  TTTGTCATCTGCTTGC
+colData names(0):
+reducedDimNames(0):
+altExpNames(0):
+"

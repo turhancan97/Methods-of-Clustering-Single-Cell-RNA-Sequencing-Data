@@ -1,0 +1,16 @@
+"0","```r
+qc.lib2 <- isOutlier(sce_2$sum, log=TRUE, type=\"lower\")
+qc.nexprs2 <- isOutlier(sce_2$detected, log=TRUE, type=\"lower\")
+# qc.mito2 <- isOutlier(sce_2$subsets_Mito_percent, type=\"higher\")
+# attr(qc.mito2, \"thresholds\")
+attr(qc.lib2, \"thresholds\")
+```"
+"1","   lower   higher 
+1931.513      Inf 
+"
+"0","```r
+attr(qc.nexprs2, \"thresholds\")
+```"
+"1","   lower   higher 
+601.4995      Inf 
+"

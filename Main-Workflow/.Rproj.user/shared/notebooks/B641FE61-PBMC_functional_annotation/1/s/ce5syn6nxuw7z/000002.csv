@@ -1,0 +1,5 @@
+"0","```r
+dim(sce)
+sce_3<-sce[,!discard] # We will use manually threshold value
+dim(sce_3)
+```"

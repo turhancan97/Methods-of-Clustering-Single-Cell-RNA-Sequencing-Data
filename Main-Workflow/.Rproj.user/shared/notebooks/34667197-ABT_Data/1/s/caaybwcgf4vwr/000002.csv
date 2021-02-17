@@ -1,0 +1,10 @@
+"0","```r
+sce<-FilterCells(sce, min_count = 1, ql_th = 0.005, qh_th = 1)
+```"
+"1","12 bad cells removed.
+"
+"0","```r
+sce<-FilterGenes(sce, min_count = 1, min_cell = 200)
+```"
+"1","9712 genes filtered out, 7376 genes remaining.
+"

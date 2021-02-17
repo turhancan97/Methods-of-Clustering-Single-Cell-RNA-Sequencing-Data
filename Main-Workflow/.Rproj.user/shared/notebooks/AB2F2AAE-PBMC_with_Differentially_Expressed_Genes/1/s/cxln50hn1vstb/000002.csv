@@ -1,0 +1,15 @@
+"0","```r
+qc.lib <- sce_2$sum < 2300
+qc.nexprs <- sce_2$detected < 750
+# qc.mito <- sce_2$subsets_Mito_percent > 3
+# discard <- qc.lib | qc.nexprs | qc.mito
+# DataFrame(LibSize=sum(qc.lib),NExprs=sum(qc.nexprs), MitoProp=sum(qc.mito), Total=sum(discard))
+discard <- qc.lib | qc.nexprs
+# Summarize the number of cells removed for each reason.
+DataFrame(LibSize=sum(qc.lib),NExprs=sum(qc.nexprs), Total=sum(discard))
+```"
+"1","DataFrame with 1 row and 3 columns
+    LibSize    NExprs     Total
+  <integer> <integer> <integer>
+1       186       208       260
+"

@@ -1,0 +1,22 @@
+"0","```r
+# find non-zero counts
+nonZero <- (counts(sce) > 0)
+# find rows/genes with at least one non-zero count 
+keep <- (rowSums(nonZero) > 0)
+# keep only the genes with non-zero count the SCE object 
+sce_2 <- sce[keep, ]
+# explore sce_2
+sce_2
+```"
+"1","class: SingleCellExperiment 
+dim: 16531 2325 
+metadata(0):
+assays(1): counts
+rownames(16531): A1BG A1BG-AS1 ... ZZEF1 ZZZ3
+rowData names(0):
+colnames(2325): AAACCTGAGAAGGTTT-1_1a AAACCTGAGAGCAATT-1_1a ...
+  TTTGGTTAGGGCATGT-1_1b TTTGGTTCATTGAGCT-1_1b
+colData names(0):
+reducedDimNames(0):
+altExpNames(0):
+"

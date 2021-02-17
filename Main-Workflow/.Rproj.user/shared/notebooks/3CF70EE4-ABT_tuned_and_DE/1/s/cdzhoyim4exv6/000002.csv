@@ -1,0 +1,12 @@
+"0","```r
+#Find PCA top 950 genes. This may take some time.
+set.seed(123)
+sce_PCA<-RankPCAGenes(sce_sampling, top = 950)
+```"
+"1","Find best PCA components...[1] 1287 1000
+950 genes selected.
+"
+"0","```r
+keep_PCA<-rowData(sce_PCA)[,\"PCAGenes\"]
+sce_PCA<-sce_PCA[keep_PCA, ]
+```"

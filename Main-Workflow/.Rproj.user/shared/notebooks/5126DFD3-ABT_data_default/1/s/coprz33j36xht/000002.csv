@@ -1,0 +1,10 @@
+"0","```r
+sce<-FilterCells(sce)
+```"
+"1","3 bad cells removed.
+"
+"0","```r
+sce<-FilterGenes(sce)
+```"
+"1","6343 genes filtered out, 10745 genes remaining.
+"

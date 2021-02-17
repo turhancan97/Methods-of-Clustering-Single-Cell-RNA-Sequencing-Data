@@ -1,0 +1,15 @@
+"0","r <- M3C(pollen$data,method=2)"
+"2","***M3C***
+"
+"2","method: regularised consensus clustering
+"
+"2","objective: entropy
+"
+"2","clustering algorithm: pam
+"
+"2","annotation: none
+"
+"2","running consensus cluster algorithm for real data...
+"
+"2","done.
+"

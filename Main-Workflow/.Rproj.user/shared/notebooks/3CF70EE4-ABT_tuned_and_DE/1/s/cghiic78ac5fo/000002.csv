@@ -1,0 +1,19 @@
+"0","```r
+keep3a <- ave.counts_a >= 0.1
+sum(keep3a)
+```"
+"1","[1] 11055
+"
+"0","```r
+table(keep3a)
+```"
+"1","keep3a
+FALSE  TRUE 
+ 5475 11055 
+"
+"0","```r
+sce_3a<-sce_3a[keep3a, ]
+dim(sce_3a)
+```"
+"1","[1] 11055  1176
+"

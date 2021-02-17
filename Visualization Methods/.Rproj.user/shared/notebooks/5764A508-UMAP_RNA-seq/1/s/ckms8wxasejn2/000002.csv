@@ -1,0 +1,7 @@
+"0","umap(pollen$data,labels=as.factor(pollen$celltypes),controlscale=TRUE,scale=3)"
+"2","***UMAP wrapper function***
+"
+"2","running...
+"
+"2","done.
+"

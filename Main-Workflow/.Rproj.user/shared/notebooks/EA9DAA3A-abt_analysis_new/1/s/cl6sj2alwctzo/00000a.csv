@@ -1,0 +1,5 @@
+"0","# For both sample A and sample B"
+"0","sce_2 <- perCellQCMetrics(sce_2)"
+"0","df2 <- data.frame(library_sizes=sce_2$sum,number_expressed=sce_2$detected)"
+"0","ggplot(df2,aes(library_sizes)) + geom_histogram(binwidth=7500,colour = ""black"",fill=""orange"") + xlab(""Library sizes"") + ylab(""Number of cells"") +"
+"0","  ggtitle(""Histogram"")"

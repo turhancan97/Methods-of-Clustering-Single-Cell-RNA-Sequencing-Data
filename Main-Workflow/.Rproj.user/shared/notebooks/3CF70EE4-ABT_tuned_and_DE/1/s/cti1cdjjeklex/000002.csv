@@ -1,0 +1,23 @@
+"0","```r
+qc.liba <- sce_a1$sum < 8000
+qc.nexprsa <- sce_a1$detected < 3750
+qc.libb <- sce_b1$sum < 8000
+qc.nexprsb <- sce_b1$detected < 3750
+discard_a <- qc.liba | qc.nexprsa
+discard_b <- qc.libb | qc.nexprsb
+# Summarize the number of cells removed for each reason.
+DataFrame(LibSize=sum(qc.liba),NExprs=sum(qc.nexprsa), Total=sum(discard_a))
+```"
+"1","DataFrame with 1 row and 3 columns
+    LibSize    NExprs     Total
+  <integer> <integer> <integer>
+1         0        60        60
+"
+"0","```r
+DataFrame(LibSize=sum(qc.libb),NExprs=sum(qc.nexprsb), Total=sum(discard_b))
+```"
+"1","DataFrame with 1 row and 3 columns
+    LibSize    NExprs     Total
+  <integer> <integer> <integer>
+1         3        56        56
+"

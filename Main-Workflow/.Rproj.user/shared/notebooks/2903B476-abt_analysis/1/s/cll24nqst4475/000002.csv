@@ -1,0 +1,2 @@
+"0","plotHeatmap(sce_plot, order_columns_by=""labels"","
+"0","    features=unique(unlist(all.markers$HSC)[31:60]))"

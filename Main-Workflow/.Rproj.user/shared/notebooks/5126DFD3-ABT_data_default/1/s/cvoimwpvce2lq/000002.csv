@@ -1,0 +1,16 @@
+"0","```r
+sce <- SingleCellExperiment(list(counts=data_ABT))
+sce
+```"
+"1","class: SingleCellExperiment 
+dim: 17088 2325 
+metadata(0):
+assays(1): counts
+rownames(17088): A1BG A1BG-AS1 ... ZNF492 ZNF534
+rowData names(0):
+colnames(2325): AAACCTGAGAAGGTTT-1_1a AAACCTGAGAGCAATT-1_1a ... TTTGGTTAGGGCATGT-1_1b
+  TTTGGTTCATTGAGCT-1_1b
+colData names(0):
+reducedDimNames(0):
+altExpNames(0):
+"

@@ -1,0 +1,9 @@
+"0","```r
+tab <- table(Assigned=pred$pruned.labels, Cluster=colLabels(sce_plot))
+
+# Adding a pseudo-count of 10 to avoid strong color jumps with just 1 cell.
+library(pheatmap)
+pheatmap(log2(tab+10), color=colorRampPalette(c(\"white\", \"blue\"))(101))
+
+colLabels(sce_plot) <- factor(colData(sce_plot)$ClusterIDs)
+```"

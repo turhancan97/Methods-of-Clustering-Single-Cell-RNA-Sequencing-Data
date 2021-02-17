@@ -1,0 +1,12 @@
+"0","```r
+dim(sce)
+```"
+"1","[1] 17088  2325
+"
+"0","```r
+class(sce)
+```"
+"1","[1] \"SingleCellExperiment\"
+attr(,\"package\")
+[1] \"SingleCellExperiment\"
+"

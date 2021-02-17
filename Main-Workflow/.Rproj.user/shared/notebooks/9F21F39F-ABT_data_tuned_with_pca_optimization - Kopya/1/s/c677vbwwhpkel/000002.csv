@@ -1,0 +1,7 @@
+"0","```r
+# outlier_dispersion <- isOutlier(dispersion_norm, log=TRUE, type=\"lower\")
+# attr(outlier_dispersion, \"thresholds\")
+# threshold <- 0.9390087
+# plot density
+plot(density(dispersion_norm), main = 'Density - Fano Factor')
+```"

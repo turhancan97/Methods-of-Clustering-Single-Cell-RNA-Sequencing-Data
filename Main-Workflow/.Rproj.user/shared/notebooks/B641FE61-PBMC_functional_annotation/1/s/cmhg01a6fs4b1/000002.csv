@@ -1,0 +1,4 @@
+"0","```r
+# sce_2 <- addPerCellQC(sce_2, subsets=list(Mito=is.mito))
+# colnames(colData(sce_2))
+```"

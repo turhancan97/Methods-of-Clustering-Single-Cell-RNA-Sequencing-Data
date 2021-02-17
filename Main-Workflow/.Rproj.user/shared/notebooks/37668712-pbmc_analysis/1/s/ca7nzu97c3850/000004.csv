@@ -1,0 +1,9 @@
+"0","set.seed(123)"
+"0","sce_plot<-PlotEmbedding(sce_cluster, embedding = ""umap"", spread = 11 , min_dist = 9)"
+"1","UMAP Embedding..."
+"1","Done.
+"
+"1","Post-hoc co-ordinate assignment..."
+"1","Done.
+"
+"0","plot_data = data.frame(""Y1"" = reducedDim(sce_plot,""umap"")[,1], Y2 = reducedDim(sce_plot, ""umap"")[,2], color = sce_plot$ClusterIDs)"

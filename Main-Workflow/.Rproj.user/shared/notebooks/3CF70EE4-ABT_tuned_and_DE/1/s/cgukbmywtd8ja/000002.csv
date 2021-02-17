@@ -1,0 +1,13 @@
+"0","```r
+# Select Top Dispersed Genes by setting ngenes_keep.
+set.seed(123)
+sce_rank<-RankGenes(sce_norm, ngenes_keep = 1000)
+```"
+"1","Sort Top Genes...
+Cutoff Genes...
+"
+"0","```r
+keep_highly_variable_gene<-rowData(sce_rank)[,\"HVG\"]
+sce_HVG<-sce_rank[keep_highly_variable_gene, ]
+dispersion_norm<-rowData(sce_HVG)[,\"dispersion_norm\"]
+```"

@@ -1,0 +1,1 @@
+"0","rowData(sce_plot)$Symbol <- rownames(sce_plot)"

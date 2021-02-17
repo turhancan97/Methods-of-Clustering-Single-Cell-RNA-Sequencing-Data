@@ -1,0 +1,9 @@
+"0","tsne(pollen$data,"
+"0","labels=scale(as.numeric(pollen$data[row.names(pollen$data)=='HBG1',])),"
+"0","controlscale = TRUE,scale=2)"
+"2","***t-SNE wrapper function***
+"
+"2","running...
+"
+"2","done.
+"

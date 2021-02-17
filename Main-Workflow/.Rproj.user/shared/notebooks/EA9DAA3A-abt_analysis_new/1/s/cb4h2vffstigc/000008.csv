@@ -1,0 +1,6 @@
+"0","vis_a <- data.frame(plot_data[0:662,],a_or_b=""a"")"
+"0","vis_b <- data.frame(plot_data[663:1276,],a_or_b=""b"")"
+"0","vis <- rbind(vis_a,vis_b)"
+"0","vis <- na.omit(vis)"
+"0","ggplot(vis,aes(color,fill=a_or_b)) + geom_bar(alpha=.5) + xlab(""Cluster"") + ylab(""Count"") +"
+"0","  ggtitle(""Bar Plot"")"

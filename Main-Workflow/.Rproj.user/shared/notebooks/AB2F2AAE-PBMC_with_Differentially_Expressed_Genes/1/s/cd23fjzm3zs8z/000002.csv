@@ -1,0 +1,10 @@
+"0","```r
+# determine the cells to keep
+keep1 <- (sce_2$sum > threshold )
+# tabulate the cells that were kept on the previous step
+table(keep1)
+```"
+"1","keep1
+FALSE  TRUE 
+    8  8373 
+"

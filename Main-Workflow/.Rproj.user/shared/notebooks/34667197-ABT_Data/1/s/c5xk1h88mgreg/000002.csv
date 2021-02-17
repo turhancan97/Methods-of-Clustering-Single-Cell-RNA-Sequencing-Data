@@ -1,0 +1,7 @@
+"0","```r
+# set threshold
+threshold <- 4000
+# plot density
+plot(density(sce_2$detected), main = 'Density - total_features')
+abline(v = threshold)
+```"

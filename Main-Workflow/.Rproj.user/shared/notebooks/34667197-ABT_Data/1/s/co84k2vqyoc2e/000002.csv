@@ -1,0 +1,7 @@
+"0","```r
+sce<-Sampling(sce, nsamples = 500, method = \"sps\",
+  optm_parameters = FALSE, pinit = 0.195, pfin = 0.9, K = 500)
+```"
+"1","Building graph with 2313 nodes...Louvain Partition...Done.
+1145 samples extracted.
+"

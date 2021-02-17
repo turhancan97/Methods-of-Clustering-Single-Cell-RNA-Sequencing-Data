@@ -1,0 +1,3 @@
+"0","mat_ab<-as.matrix(counts(sce_2))"
+"0","a<-mat_ab[,1:1245]"
+"0","b<-mat_ab[,1246:2325]"

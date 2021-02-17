@@ -1,0 +1,6 @@
+"0","```r
+dc.corr = Cluster(dc.corr,method = \"kmeans\",centers = 2)
+```"
+"1","Clustering on embedded dimensions...Perfom k-means Clustering...Done.
+Done.
+"

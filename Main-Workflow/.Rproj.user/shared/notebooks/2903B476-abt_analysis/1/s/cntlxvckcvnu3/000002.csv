@@ -1,0 +1,3 @@
+"0","write.csv(DE_genes_all$genes, "
+"0","          file = file.path(""C:/Users/Asus/Desktop/last_analysis/single-cell-project"",""genes_ABT.csv""),"
+"0","          quote = FALSE)"

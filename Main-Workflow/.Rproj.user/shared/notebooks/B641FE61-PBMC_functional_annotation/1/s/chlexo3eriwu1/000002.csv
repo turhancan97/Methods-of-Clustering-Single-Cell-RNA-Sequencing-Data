@@ -1,0 +1,4 @@
+"0","```r
+ggplot(df,aes(number_expressed)) + geom_histogram(binwidth=100,colour = \"black\",fill=\"orange\") + xlab(\"Number of expressed genes\") + ylab(\"Number of cells\") +
+  ggtitle(\"Histogram\")
+```"

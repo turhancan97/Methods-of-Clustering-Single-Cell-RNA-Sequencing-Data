@@ -1,0 +1,5 @@
+"0","```r
+set.seed(123)
+sce_plot<-PlotEmbedding(sce_cluster, embedding = \"umap\", spread = 10 , min_dist = 5)
+plot_data = data.frame(\"Y1\" = reducedDim(sce_plot,\"umap\")[,1], Y2 = reducedDim(sce_plot, \"umap\")[,2], color = sce_plot$ClusterIDs)
+```"

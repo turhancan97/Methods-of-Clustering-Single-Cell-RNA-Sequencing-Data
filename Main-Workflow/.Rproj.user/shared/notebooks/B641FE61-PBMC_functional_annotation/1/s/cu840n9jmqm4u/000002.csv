@@ -1,0 +1,8 @@
+"0","```r
+## discard2 <- qc.lib2 | qc.nexprs2 | qc.mito2
+discard2 <- qc.lib2 | qc.nexprs2
+
+# Summarize the number of cells removed for each reason.
+## DataFrame(LibSize=sum(qc.lib2), NExprs=sum(qc.nexprs2), MitoProp=sum(qc.mito2), Total=sum(discard2))
+DataFrame(LibSize=sum(qc.lib2), NExprs=sum(qc.nexprs2), Total=sum(discard2))
+```"

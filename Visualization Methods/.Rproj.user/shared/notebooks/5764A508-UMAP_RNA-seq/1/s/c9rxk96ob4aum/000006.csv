@@ -1,0 +1,7 @@
+"0","umap(pollen$data,labels=as.factor(r$assignments),printres = TRUE,printwidth = 24)"
+"2","***UMAP wrapper function***
+"
+"2","running...
+"
+"2","printing UMAP to current directory...
+"

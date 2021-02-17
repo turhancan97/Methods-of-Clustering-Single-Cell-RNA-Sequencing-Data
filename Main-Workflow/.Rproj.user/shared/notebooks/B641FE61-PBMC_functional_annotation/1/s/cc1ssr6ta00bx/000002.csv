@@ -1,0 +1,6 @@
+"0","```r
+set.seed(123)
+sce_norm<-CountNormalize(sce,return_log = FALSE)
+sce_norm<-logNormCounts(sce_norm) # scater
+normcounts<-list(normcounts(sce_norm))
+```"
