@@ -1,1 +1,2 @@
-# Methods-of-Clustering-Single-Cell-RNA-Sequencing-Data
+# Methods of Clustering Single-Cell RNA Sequencing Data
+Single-cell sequencing is a novel technology to define intercellular heterogeneity, rare cell types, cell genealogies or disease evolution based on profiling thousands of cells in parallel. Identification of cellular subpopulations from heterogeneous populations of cells could be done by data clustering. The choice of a clustering algorithm and its related parameters such as similarity measure and the number of clusters should be carefully evaluated based on the compactness and separability of clusters. The goal of the project is to test different clustering algorithms to define cell subpopulation using breast cancer single-cell data.
