@@ -91,5 +91,8 @@ Dunn index and clustering comparison was performed by tuning of various paramete
 3. Sinha D, Kumar A, Kumar H, Bandyopadhyay S, Sengupta D. dropClust: Efficient clustering of ultra-large scRNA-seq data. 2018; doi:10.1101/170308
 4. McInnes L, Healy J, Melville J. UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction. 2018; https://arxiv.org/abs/1802.03426
 5. Perraudeau F, Risso D, Street K et al. Bioconductor workflow for single-cell RNA sequencing: Normalization, dimensionality reduction, clustering, and lineage inference 2017; 6:1158 https://doi.org/10.12688/f1000research.12122.1
+6. https://scrnaseq-course.cog.sanger.ac.uk/website/index.html
+7. https://bioconductor.org/books/release/SingleRBook/
+8. https://bioconductor.org/books/release/OSCA/
 
 
