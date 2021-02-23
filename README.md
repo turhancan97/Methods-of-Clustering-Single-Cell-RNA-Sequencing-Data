@@ -86,6 +86,10 @@ Dunn index and clustering comparison was performed by tuning of various paramete
 
 # Reference
 
-
+1. Lun AT, McCarthy DJ, Marioni JC. A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor. 2016; doi:10.12688/f1000research.9501.2
+2. Marczyk M, Patwardhan GA, Zhao J, Qu R, Li X, Wali VB, Gupta AK, Pillai MM, Kluger Y, Yan Q, Hatzis C, Pusztai L, Gunasekharan V. Multi-Omics Investigation of Innate Navitoclax Resistance in Triple-Negative Breast Cancer Cells. Cancers. 2020; 12(9):2551. https://doi.org/10.3390/cancers12092551
+3. Sinha D, Kumar A, Kumar H, Bandyopadhyay S, Sengupta D. dropClust: Efficient clustering of ultra-large scRNA-seq data. 2018; doi:10.1101/170308
+4. McInnes L, Healy J, Melville J. UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction. 2018; https://arxiv.org/abs/1802.03426
+5. Perraudeau F, Risso D, Street K et al. Bioconductor workflow for single-cell RNA sequencing: Normalization, dimensionality reduction, clustering, and lineage inference 2017; 6:1158 https://doi.org/10.12688/f1000research.12122.1
 
 
